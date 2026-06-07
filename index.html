@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Theology Mirror</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { min-height: 100vh; background: linear-gradient(135deg, #1c130a 0%, #2e1f0e 50%, #1a1208 100%); display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; font-family: Georgia, 'Times New Roman', serif; }
+  #root { width: 100%; max-width: 680px; }
+  .card { width: 100%; background: #f5efe0; border-radius: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 16px 48px rgba(0,0,0,0.5); overflow: hidden; }
+  .top-bar { height: 4px; background: linear-gradient(90deg, #8b2e0f, #c9973a, #8b2e0f); }
+  .inner { padding: 2.5rem 3rem; }
+  @media (max-width: 500px) { .inner { padding: 1.75rem 1.5rem; } }
+  .label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: #8b2e0f; margin-bottom: 0.6rem; }
+  h1 { font-size: 2.8rem; font-weight: 700; color: #1a1208; line-height: 1.1; margin-bottom: 0.4rem; }
+  h1 em { font-style: italic; color: #8b2e0f; }
+  .subtitle { font-size: 1.05rem; color: #6b5a3e; font-style: italic; margin-bottom: 2rem; }
+  .header-wrap { text-align: center; margin-bottom: 2rem; padding-bottom: 1.75rem; border-bottom: 1px solid #c4a96e; }
+  .div-wrap { display: flex; align-items: center; gap: 0.8rem; margin: 1.5rem 0; color: #c4a96e; }
+  .div-line { flex: 1; height: 1px; background: #c4a96e; }
+  .div-text { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; margin: 0.75rem 0 1.5rem; }
+  .pill { background: #e8dfc8; border: 1px solid #c4a96e; border-radius: 2px; padding: 0.25rem 0.6rem; font-size: 0.82rem; color: #6b5a3e; font-style: italic; }
+  p { font-size: 1rem; line-height: 1.85; color: #3d2e14; margin-bottom: 1rem; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: #1a1208; font-weight: 600; }
+  .btn-primary { display: block; width: 100%; padding: 0.9rem 2rem; background: #8b2e0f; color: #f5efe0; border: none; border-radius: 2px; font-family: Georgia, serif; font-size: 1.05rem; font-weight: bold; letter-spacing: 0.05em; cursor: pointer; margin-top: 1.75rem; }
+  .btn-primary:hover { background: #a33510; }
+  .resume-box { background: #e8dfc8; border: 1px solid #c4a96e; border-radius: 2px; padding: 1rem 1.25rem; margin-top: 1.5rem; }
+  .resume-text { font-size: 0.95rem; color: #3d2e14; margin-bottom: 0.75rem; line-height: 1.6; }
+  .resume-buttons { display: flex; gap: 0.6rem; }
+  .btn-resume { flex: 1; padding: 0.6rem; background: #8b2e0f; color: #f5efe0; border: none; border-radius: 2px; font-family: Georgia, serif; font-size: 0.9rem; font-weight: bold; cursor: pointer; }
+  .btn-fresh { flex: 1; padding: 0.6rem; background: transparent; color: #6b5a3e; border: 1px solid #c4a96e; border-radius: 2px; font-family: Georgia, serif; font-size: 0.9rem; cursor: pointer; }
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-meta { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; }
+  .progress-label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: #6b5a3e; }
+  .progress-count { font-size: 0.95rem; color: #8b2e0f; font-weight: bold; }
+  .progress-track { width: 100%; height: 3px; background: #e8dfc8; border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #8b2e0f, #c9973a); border-radius: 2px; transition: width 0.4s ease; }
+  .q-num { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: #c9973a; margin-bottom: 0.8rem; }
+  .q-text { font-size: 1.45rem; font-weight: normal; line-height: 1.45; color: #1a1208; margin-bottom: 2.5rem; min-height: 5rem; }
+  .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  .btn-yes, .btn-no { padding: 0.85rem; border-radius: 2px; font-family: Georgia, serif; font-size: 1.05rem; font-weight: bold; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; }
+  .btn-yes { border: 2px solid #c4a96e; background: transparent; color: #3d2e14; }
+  .btn-yes.selected { border-color: #8b2e0f; background: #8b2e0f; color: #f5efe0; }
+  .btn-no { border: 2px solid #c4a96e; background: transparent; color: #3d2e14; }
+  .btn-no.selected { border-color: #3d2e14; background: #3d2e14; color: #f5efe0; }
+  .save-btn { display: block; width: 100%; margin-top: 1rem; padding: 0.55rem; background: transparent; border: 1px solid #c4a96e; border-radius: 2px; font-family: Georgia, serif; font-size: 0.82rem; color: #6b5a3e; cursor: pointer; letter-spacing: 0.05em; }
+  .banner { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: #3d2e14; color: #f5efe0; padding: 0.6rem 1.5rem; border-radius: 2px; font-size: 0.88rem; font-style: italic; box-shadow: 0 4px 16px rgba(0,0,0,0.3); z-index: 999; display: none; }
+  h2 { font-size: 1.9rem; color: #1a1208; font-weight: 700; margin-bottom: 0.3rem; }
+  .ornament { text-align: center; color: #c9973a; font-size: 0.9rem; letter-spacing: 0.4em; margin: 1rem 0; }
+  .results-intro { font-size: 0.97rem; color: #6b5a3e; font-style: italic; line-height: 1.75; }
+  .section-title { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: #6b5a3e; margin-bottom: 0.6rem; padding-bottom: 0.35rem; border-bottom: 1px solid #e8dfc8; margin-top: 1.5rem; }
+  .result-item { margin-bottom: 0.5rem; border-radius: 2px; overflow: hidden; }
+  .result-item.clean { border: 1px solid #e8dfc8; }
+  .result-item.detected { border: 1px solid #c4a96e; }
+  .result-header { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.85rem; }
+  .result-header.clean { background: transparent; cursor: default; }
+  .result-header.detected { background: #e8dfc8; cursor: pointer; }
+  .result-name.clean { font-size: 0.97rem; color: #6b5a3e; font-weight: normal; font-style: italic; }
+  .result-name.detected { font-size: 0.97rem; color: #1a1208; font-weight: bold; font-style: normal; }
+  .score-wrap { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; margin-left: 0.75rem; }
+  .dot-row { display: flex; gap: 3px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .score-label { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .score-label.detected { color: #8b2e0f; font-weight: bold; }
+  .score-label.clean { color: #6b5a3e; font-weight: normal; }
+  .chevron { font-size: 0.6rem; color: #6b5a3e; transition: transform 0.2s; flex-shrink: 0; }
+  .chevron.open { transform: rotate(180deg); }
+  .result-body { padding: 0.85rem 0.85rem 1rem; border-top: 1px solid #c4a96e; }
+  .cat-desc { font-size: 0.9rem; line-height: 1.75; color: #6b5a3e; font-style: italic; margin-bottom: 1rem; padding-bottom: 0.85rem; border-bottom: 1px solid #e8dfc8; }
+  .tq-wrap { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e8dfc8; }
+  .tq-wrap:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .tq-text { font-size: 0.93rem; color: #1a1208; font-style: italic; margin-bottom: 0.35rem; line-height: 1.4; }
+  .tq-answer { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: #8b2e0f; margin-bottom: 0.5rem; }
+  .tq-expl { font-size: 0.92rem; line-height: 1.8; color: #3d2e14; }
+  .footer { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid #c4a96e; text-align: center; }
+  .footer p { font-size: 0.9rem; color: #6b5a3e; font-style: italic; line-height: 1.75; margin-bottom: 0.85rem; }
+  .footer-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+  .btn-restart { padding: 0.6rem 1.75rem; border: 1px solid #6b5a3e; background: transparent; color: #6b5a3e; border-radius: 2px; font-family: Georgia, serif; font-size: 0.9rem; cursor: pointer; letter-spacing: 0.05em; }
+  .btn-print { padding: 0.6rem 1.75rem; border: 1px solid #8b2e0f; background: #8b2e0f; color: #f5efe0; border-radius: 2px; font-family: Georgia, serif; font-size: 0.9rem; cursor: pointer; letter-spacing: 0.05em; }
+  @media print {
+    body { background: white; padding: 0; }
+    .card { box-shadow: none; }
+    .btn-primary, .btn-restart, .btn-print, .save-btn, .footer-btns { display: none !important; }
+    .result-body { display: block !important; }
+    .chevron { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="banner" id="save-banner">Progress saved — you can close and return anytime.</div>
+
+<script>
+const CATEGORIES = [
+  { id:"gnosticism", name:"Gnosticism", section:"The Physical World & Human Nature", description:"Gnosticism teaches that the true self is a pure spirit imprisoned in inferior physical matter, and that salvation means escaping the material world through special spiritual knowledge. It is one of the oldest and most persistent challenges to orthodox Christianity." },
+  { id:"docetism", name:"Docetism", section:"The Nature of Jesus", description:'Docetism (from the Greek dokein, "to seem") teaches that Jesus only appeared to be human — that God could not have truly taken on physical flesh. It quietly undermines the full weight of the incarnation, the atonement, and the comfort of Hebrews 4:15.' },
+  { id:"arianism", name:"Arianism", section:"The Nature of God", description:"Arianism teaches that Jesus is a created or begotten being — exalted above all creation, but ultimately subordinate to and derivative from the Father. The entire Nicene Creed was written as a direct response to this position, condemned at the Council of Nicaea in 325 AD." },
+  { id:"marcionism", name:"Marcionism", section:"The Nature of God", description:"Marcionism teaches that the God of the Old Testament is different from or inferior to the God revealed by Jesus. Marcion himself was excommunicated in 144 AD for wanting to discard the entire Old Testament. Its echoes are surprisingly common in modern churches that functionally treat the OT as optional background." },
+  { id:"modalism", name:"Modalism", section:"The Nature of God", description:"Modalism (also called Sabellianism) teaches that Father, Son, and Holy Spirit are not three distinct persons but three different modes or expressions of the same single person. It resolves the complexity of Trinitarian theology by collapsing genuine personal distinction into sequential divine masks." },
+  { id:"montanism", name:"Montanism", section:"Scripture & Revelation", description:"Montanism elevates personal prophecy, private revelation, and direct spiritual experience to a level of authority equal to or superseding Scripture. Named after Montanus, a 2nd century prophet who claimed the Holy Spirit was delivering new doctrine through him, it is highly relevant to modern charismatic and prophetic movements." },
+  { id:"pelagianism", name:"Pelagianism", section:"Salvation & Human Nature", description:"Pelagianism teaches that humans have the natural, uncorrupted ability to choose God and live righteously without divine grace working first. Named after the British monk Pelagius, condemned at multiple councils. Its echoes are everywhere in modern evangelical emphasis on human decision-making in salvation." },
+  { id:"moralism", name:"Moralism", section:"Salvation & Human Nature", description:"Moralism is the functional belief that Christianity is primarily about becoming a good person and that God's approval tracks with moral effort and sincere behavior. The gospel quietly becomes a self-improvement program with religious language, and the cross becomes less about rescue and more about inspiration." },
+  { id:"antinomianism", name:"Antinomianism", section:"Salvation & Human Nature", description:'Antinomianism (from the Greek anti-nomos, "against law") teaches that grace completely eliminates any obligation to moral law — that how we live is essentially irrelevant because we are already forgiven. Paul addresses this directly in Romans 6. It is the opposite error from Moralism and equally dangerous.' },
+  { id:"prosperity", name:"Prosperity Theology", section:"Faith & Blessing", description:"Prosperity Theology teaches that financial blessing and physical health are God's guaranteed will for all believers, and that faith, giving, and righteous living reliably produce material prosperity. Suffering and poverty become signs of insufficient faith. It is widely visible in modern American Christianity." },
+  { id:"fatalism", name:"Fatalism", section:"God, Sovereignty & Human Agency", description:"Theological fatalism is the belief that God has predetermined all events so completely that human choices are essentially illusory — that the outcome is fixed regardless of what we do. It quietly drains prayer, evangelism, and daily decision-making of genuine urgency while wearing the clothing of orthodox trust in God's sovereignty." },
+  { id:"semipelagianism", name:"Semi-Pelagianism", section:"God, Sovereignty & Human Agency", description:"Semi-Pelagianism teaches that humans are weakened but not incapacitated by sin, and that they make the first move toward God with grace then responding and completing what human initiative began. Condemned at the Council of Orange in 529 AD, it is probably the most widespread functional belief in modern evangelical Christianity." }
+];
+
+const QUESTIONS = [
+  { id:"g1", category:"gnosticism", text:"Is your body a vessel that the real you lives inside of?", pa:"yes", explanation:"Answering yes may suggest the real self is a spiritual entity trapped in inferior physical matter — a core Gnostic assumption. Gnosticism flourished in the 2nd century and was one of the first major crises the early church faced; Irenaeus of Lyon wrote his landmark Against Heresies (c. 180 AD) largely to combat it. Orthodox Christianity has consistently taught that you are a unified body-soul being, not a spirit merely housed in flesh, a conviction grounded in the goodness of creation and the doctrine of bodily resurrection." },
+  { id:"g2", category:"gnosticism", text:"Will believers in the resurrection have heavenly bodies that are no longer physical in any way?", pa:"yes", explanation:"Answering yes might quietly import a Gnostic assumption that the final state of the redeemed is purely spiritual — that matter is ultimately left behind. Paul's 'spiritual body' language in 1 Corinthians 15 has fueled this reading, but Irenaeus and later theologians argued he meant glorified and transformed physicality, not the absence of a body. The mainstream church has consistently affirmed a bodily resurrection into a renewed material existence, not an escape from physicality." },
+  { id:"g3", category:"gnosticism", text:"When you feel certain God has spoken to you about something, does checking it against Scripture or your pastor feel unnecessary?", pa:"yes", explanation:"Answering yes could reflect a Gnostic pattern of elevating private inner knowledge above external authorities — the idea that direct spiritual perception is self-validating. Gnostic teachers claimed access to hidden knowledge (gnosis) that ordinary Christians and church leaders lacked, which made accountability structures feel irrelevant to them; Irenaeus devoted much of Against Heresies to dismantling exactly this claim. Orthodox Christianity has taught that even genuine spiritual promptings are meant to be tested against Scripture and community, not treated as self-sufficient authorities." },
+  { id:"g4", category:"gnosticism", text:"Is prioritizing your physical health a distraction from your spiritual life?", pa:"yes", explanation:"Answering yes may reflect a Gnostic tendency to treat the material world — including the body — as spiritually inferior or irrelevant to the life of faith. This assumption was directly challenged by Irenaeus and others who insisted that God's creation of matter was good, his entry into a physical body was real, and his promise to resurrect that body was not incidental. The orthodox position is that caring for the body is itself a spiritual act, consistent with a faith that takes incarnation and resurrection seriously." },
+  { id:"g5", category:"gnosticism", text:"Is the physical world essentially a temporary placeholder until we can exist as purely spiritual beings in life after death with God?", pa:"yes", explanation:"Answering yes might point toward Gnostic cosmology, which taught that the material world is a flawed or fallen creation to be escaped rather than redeemed. This view was opposed by Irenaeus and later by theologians like Augustine, who insisted that creation's problem is not its materiality but the fall — and that God's plan is restoration, not evacuation. Scripture's picture of eternity — renewed creation, resurrected bodies, a restored world — points toward transformation of the physical, not replacement with something purely spiritual." },
+  { id:"d1", category:"docetism", text:"When you picture Jesus in Gethsemane sweating drops of blood, do you find yourself thinking \"but he knew how it would all turn out\"?", pa:"yes", explanation:"Answering yes might suggest a tendency to soften Jesus's humanity by letting his divine foreknowledge absorb the weight of his suffering — a pattern close to Docetist thinking. Docetism (from the Greek dokein, 'to seem') emerged in the 1st and 2nd centuries and was opposed by Ignatius of Antioch, who insisted repeatedly in his letters that Jesus's suffering was real and not merely apparent. The mainstream church has taught that the anguish in Gethsemane was genuine and fully felt — and that both his foreknowledge and his real human terror can be true at the same time." },
+  { id:"d2", category:"docetism", text:"Did Jesus have full access to his divine knowledge and power at all times during his earthly life?", pa:"yes", explanation:"Answering yes may lean toward Docetism by implying Jesus's humanity was more of a costume than a genuine condition. Mark 13:32 records Jesus stating he did not know the day or hour of his own return — a striking admission that the Council of Chalcedon (451 AD) took seriously in defining Jesus as fully human as well as fully divine. Orthodox Christianity has held that the incarnation involved real human limitation, not merely the appearance of it." },
+  { id:"d3", category:"docetism", text:"Did Jesus feel the inner battle of temptation and the pangs of hunger the same way you and I would during his 40 days in the desert?", pa:"no", explanation:"Answering no might indicate a tendency to protect Jesus's divinity by distancing him from fully human experience — the core impulse behind Docetism. Ignatius of Antioch and later Athanasius argued that a Jesus who only appeared to suffer or struggle could not genuinely save human beings from the inside of their condition. Hebrews 4:15 insists he was tempted in every way just as we are, and the comfort that verse offers depends entirely on that temptation being real." },
+  { id:"d4", category:"docetism", text:"Was Jesus's experience of pain and suffering on the cross fundamentally different from what an ordinary person would feel?", pa:"yes", explanation:"Answering yes may suggest a Docetist instinct to shield Jesus's divine nature from the full force of human suffering. This was precisely what Ignatius of Antioch warned against in his letters to the Smyrnaeans, arguing that a Jesus who only seemed to suffer rendered the crucifixion meaningless. Orthodox Christianity has insisted the suffering was genuine and fully human — the cry of dereliction in Matthew 27:46 being one of the most unguarded expressions of that reality in all of Scripture." },
+  { id:"d5", category:"docetism", text:"Is it hard to imagine Jesus as a child who had to be taught how to read Scripture by his parents?", pa:"yes", explanation:"Answering yes might reflect a Docetist discomfort with Jesus's genuine human development — the sense that real learning and growth are beneath his dignity. Luke 2:52 explicitly states that Jesus 'grew in wisdom and stature,' and the scene just before it shows a 12-year-old asking questions and listening in the temple. The mainstream church has taught that genuine growth and development are not embarrassments to the incarnation but essential features of it." },
+  { id:"a1", category:"arianism", text:"Did God the Father send Jesus the way a king would send an ambassador on his behalf?", pa:"yes", explanation:"Answering yes might suggest an Arian tendency to see Jesus as a representative of God rather than God himself — an exalted figure sent from above rather than the one who came in person. Arianism was championed by the Alexandrian priest Arius in the early 4th century and condemned at the Council of Nicaea in 325 AD, which was convened largely to settle this exact question. Orthodox Christianity has taught that the incarnation was not God dispatching an emissary but God himself entering creation — a distinction the Nicene Creed was written to preserve." },
+  { id:"a2", category:"arianism", text:"Does the presence of the biblical figure Jesus in history begin with his birth?", pa:"no", explanation:"Answering no may indicate a leaning toward Arianism, which taught that Jesus had a beginning point — that there was a time before he existed. Arius's position was summarized in the phrase 'there was a time when he was not,' which Athanasius of Alexandria spent much of his life opposing, famously holding the orthodox position almost alone through multiple exiles. The Nicene Creed's phrase 'eternally begotten' was chosen specifically to affirm that the Son has no point of origin — that his relationship to the Father exists entirely outside of time." },
+  { id:"a3", category:"arianism", text:"When you pray to the Father through Jesus, is Jesus acting as a go-between between you and God Almighty?", pa:"yes", explanation:"Answering yes might suggest an Arian picture in which Jesus occupies a middle tier between humanity and a God who is somehow greater and more ultimate. Arius taught that the Son was the highest of all created beings — exalted far above everything else — but still subordinate to and derivative from the Father, which the Council of Nicaea rejected as incompatible with Scripture. Orthodox Christianity has taught that praying through Jesus is not routing your prayer through an intermediary but coming to God himself, since the Son shares fully in the divine nature." },
+  { id:"a4", category:"arianism", text:"Does it make sense to give Jesus credit and worship for the acts of God described in the Old Testament?", pa:"no", explanation:"Answering no may reflect an Arian assumption that Jesus enters the story at Bethlehem and that the God of the Old Testament is essentially the Father alone. Arius's framework made the Son a later and derivative figure, which was opposed by Athanasius and enshrined as heresy at Nicaea in 325 AD. John 1 and Colossians 1 both present Jesus as the eternal Word through whom all things were created — which orthodox Christianity has understood to mean he was present and active throughout the whole of Scripture, not just the New Testament." },
+  { id:"a5", category:"arianism", text:"Is the Father the original source from whom the Son came into existence?", pa:"yes", explanation:"Answering yes might lean toward Arianism's central claim that the Son had a beginning — that he was brought into being by the Father, however exaltedly. This was the position Arius defended at Nicaea and which Athanasius countered with the doctrine of eternal generation — the idea that the Son's relationship to the Father is not one of creation but of eternal, timeless derivation of nature. The Nicene Creed's careful language of 'begotten, not made' was crafted to hold exactly this distinction." },
+  { id:"m1", category:"marcionism", text:"Do you consider yourself more of a New Testament Christian?", pa:"yes", explanation:"Answering yes might indicate a Marcionite tendency to treat the two testaments as operating on different levels of authority or relevance. Marcion of Sinope was a 2nd-century bishop who argued the Old Testament belonged to a lesser God and should be discarded entirely — he was excommunicated in Rome in 144 AD and opposed by Tertullian, who wrote five books against him. Orthodox Christianity has consistently held both testaments as equally authoritative, understanding the Old as the foundation the New is built upon rather than a prologue to be outgrown." },
+  { id:"m2", category:"marcionism", text:"Did Jesus reveal a God different from that of the Old Testament?", pa:"yes", explanation:"Answering yes may reflect a Marcionite instinct to resolve the tension between the two testaments by concluding they describe two different Gods. Marcion taught that the God of the OT was a lesser, harsher deity distinct from the loving Father Jesus revealed — a position Tertullian and Irenaeus both argued was a fundamental misreading of Scripture. The mainstream church has taught that Jesus does not correct or replace the OT portrait of God but fulfills and fully reveals the same God who has been present throughout." },
+  { id:"m3", category:"marcionism", text:"When looking to Scripture for how to live a Christian life, should you prioritize the New Testament but use the Old Testament as historical context?", pa:"yes", explanation:"Answering yes might suggest a mild Marcionite habit of treating the OT as background material rather than living Scripture with equal authority. Marcion formalized this instinct into a complete theological system, removing the OT from his canon entirely — a move that prompted the early church to more explicitly define what belonged in Scripture and why. Paul's declaration in 2 Timothy 3:16 that 'all Scripture is God-breathed and useful' was written when the only compiled Scripture was the Old Testament, which gives the phrase considerable weight." },
+  { id:"m4", category:"marcionism", text:"Was the Old Testament essentially a flawed first draft that Jesus came to rewrite?", pa:"yes", explanation:"Answering yes may lean toward Marcionism's core claim that the OT represents an inferior or superseded revelation. Marcion was opposed by virtually every major theologian of the 2nd century, including Irenaeus, Tertullian, and Justin Martyr, all of whom argued that the two testaments tell a single coherent story. Jesus's own words in Matthew 5:17 — 'I have not come to abolish the Law or the Prophets but to fulfill them' — draw a direct line between his mission and the OT rather than a contrast with it." },
+  { id:"m5", category:"marcionism", text:"When you read the Bible, does Jesus feel like he is speaking more directly to you than the God of the Old Testament?", pa:"yes", explanation:"Answering yes might reflect a Marcionite tendency to experience the two testaments as having different Gods with different dispositions toward humanity. This feeling is understandable and common, but Marcion's error was in treating it as a theological conclusion rather than a reading challenge — and he was excommunicated for following that logic to its end. Orthodox Christianity holds that the God who speaks in the Psalms, wrestles with Jacob, and weeps over Israel is the same God revealed in Jesus — meaning the OT is also his portrait, and reading it that way tends to open it up considerably." },
+  { id:"mo1", category:"modalism", text:"Are Father, Son and Holy Spirit three distinct persons rather than simply three different expressions of the same single God?", pa:"no", explanation:"Answering no might suggest a Modalist tendency to protect the oneness of God by collapsing the three persons into a single person wearing different masks. Modalism was championed by Sabellius in the 3rd century and opposed by Tertullian, who coined much of the Trinitarian vocabulary still used today — including the Latin persona — specifically to articulate genuine distinction within unity. Orthodox Christianity has taught that Father, Son, and Spirit are one God in three genuinely distinct persons, not one person in three sequential roles." },
+  { id:"mo2", category:"modalism", text:"In the garden of Gethsemane, was Jesus actually talking to someone other than himself when he prayed?", pa:"no", explanation:"Answering no may reflect a Modalist reading in which Father and Son are the same person, making the prayer in Gethsemane a kind of internal monologue. Sabellius's framework struggled with exactly these moments of apparent dialogue between the persons, which Tertullian and later the Cappadocian Fathers — Basil, Gregory of Nyssa, and Gregory of Nazianzus — used as evidence that the distinction between persons must be real. The mainstream church has understood 'not my will but yours' as genuine relational address between two distinct persons, not a single person speaking to himself." },
+  { id:"mo3", category:"modalism", text:"At Jesus's baptism, was the voice from heaven the same person as Jesus standing in the water?", pa:"yes", explanation:"Answering yes might indicate a Modalist instinct to identify the Father and Son as the same person rather than distinct persons within one God. The baptism scene is one of the most explicitly Trinitarian moments in Scripture — all three persons simultaneously present and distinct — and it posed a direct problem for Sabellius's framework, which described the three as sequential rather than co-present. Orthodox Christianity has pointed to this scene as one of the clearest grounds for insisting that the personal distinctions within the Trinity are real and not merely different modes of expression." },
+  { id:"mo4", category:"modalism", text:"When you pray to Jesus, are you praying to the same person as when you pray to God the Father?", pa:"yes", explanation:"Answering yes might lean toward Modalism depending on what 'same person' means — Jesus is fully God, which is orthodox, but if that means identical to the Father, the personal distinction the Trinity requires begins to collapse. Sabellius used exactly this kind of language — emphasizing the oneness of God in a way that dissolved genuine distinction — and was condemned by Pope Callixtus I in Rome around 220 AD. Orthodox Christianity has taught that the Son and Father share one divine nature but are genuinely distinct persons — a difference that matters for how we understand prayer, the incarnation, and the cross." },
+  { id:"mo5", category:"modalism", text:"Is the Holy Spirit the way God shows up and moves in the world today, rather than a distinct person in his own right?", pa:"yes", explanation:"Answering yes may reflect a Modalist tendency to treat the Spirit as a mode of divine activity rather than a genuinely distinct person. This was a common instinct in early Christianity and contributed to the Pneumatomachian controversy of the 4th century, in which the full personhood of the Spirit was disputed — a debate resolved at the First Council of Constantinople in 381 AD. Jesus's own language about the Spirit in John 14-16 is strikingly personal — he calls him 'another Counselor,' uses personal pronouns, and describes him as teaching, grieving, and interceding — a portrait that sits uneasily with the idea of a force or mode rather than a person." },
+  { id:"mt1", category:"montanism", text:"Have you ever changed a major life decision because someone gave you a prophetic word?", pa:"yes", explanation:"Answering yes might suggest a Montanist tendency to treat personal prophetic words as carrying decision-making authority independent of Scripture and community discernment. Montanism emerged in the 2nd century in Phrygia, led by Montanus and two prophetesses, Prisca and Maximilla, who claimed to deliver new revelation with apostolic authority — the movement was condemned by a series of regional councils in Asia Minor around 177 AD. Orthodox Christianity has generally taught that prophetic gifts are real but must be tested against Scripture and wise counsel rather than acted on as self-sufficient authorities." },
+  { id:"mt2", category:"montanism", text:"If a trusted pastor or prophet declares \"God told me to tell you this,\" should that message carry the same weight as Scripture in your life?", pa:"yes", explanation:"Answering yes may reflect the core Montanist claim that certain Spirit-filled individuals could deliver revelation with the same authority as the apostles. Montanus himself declared that he was the mouthpiece of the Holy Spirit and that his pronouncements superseded earlier Christian teaching — Apollinaris of Hierapolis and Miltiades were among the early theologians who wrote against him, though most of their works are lost. The mainstream church settled on the position that Scripture holds a unique and closed authority that no subsequent prophecy can equal or override, however sincere its source." },
+  { id:"mt3", category:"montanism", text:"\"I felt a peace from God about it\" — is this a sufficient basis for a major life decision?", pa:"yes", explanation:"Answering yes might indicate a Montanist pattern of treating subjective spiritual experience as self-validating authority for significant choices. The Montanists elevated ecstatic personal experience — including visions, trances, and felt impressions — to a level that effectively bypassed the church's teaching authority, which was why they were condemned by multiple councils in the late 2nd century. Orthodox Christianity has taught that genuine spiritual peace and felt conviction are real and valuable, but work best alongside Scripture, wise counsel, and community discernment rather than as standalone authorities." },
+  { id:"mt4", category:"montanism", text:"Have you ever felt that what God was telling you directly was more applicable to your situation than anything you could find in Scripture?", pa:"yes", explanation:"Answering yes may suggest a Montanist tendency to place direct personal revelation above the settled authority of Scripture in practical decision-making. This was precisely the pattern Montanus modeled — framing his own pronouncements as more immediate and relevant than existing Christian teaching — which Apollinaris and other 2nd-century bishops identified as the movement's central danger. Orthodox Christianity has generally understood direct spiritual guidance as filling in the specific details of situations Scripture addresses in principle, rather than functioning as a higher authority in its own right." },
+  { id:"mt5", category:"montanism", text:"Just as God revealed new truths to Peter and Paul after the Resurrection, is he still revealing new truths to his church in the same way today?", pa:"yes", explanation:"Answering yes might reflect a Montanist assumption that the apostolic mode of revelation — foundational, binding, Scripture-forming — is a continuing pattern rather than a unique and completed event. Montanus claimed to be delivering a 'New Prophecy' that continued and surpassed what the apostles had received, a claim that Eusebius of Caesarea documented and criticized extensively in his Ecclesiastical History. Orthodox Christianity has generally understood the apostolic revelatory experience as unrepeatable and foundational — the basis on which Scripture was written — while affirming that God continues to speak and guide through means that do not carry that same authority." },
+  { id:"p1", category:"pelagianism", text:"When presented with the Gospel, is every person equally capable of choosing to accept or reject it?", pa:"yes", explanation:"Answering yes might suggest a Pelagian assumption that the human will is naturally free and undamaged enough to reach for God without grace working first. Pelagius was condemned at the Council of Carthage in 418 AD largely through Augustine's efforts, though Aquinas later nuanced Augustine's picture — arguing that sin damages rather than destroys the will's natural capacities, and that grace perfects and elevates human nature rather than simply overriding it. Orthodox Christianity has broadly taught that genuine human response to the Gospel is real, but that grace must be already at work making that response possible." },
+  { id:"p2", category:"pelagianism", text:"Before coming to faith, was there anything genuinely preventing you from choosing God on your own?", pa:"no", explanation:"Answering no may reflect a Pelagian view that sin weakens moral behavior but leaves the will's fundamental freedom toward God intact. Augustine argued forcefully that grace restores a capacity sin destroyed, while Aquinas refined this by distinguishing between natural goods — which the will can still pursue — and the supernatural end of union with God, which requires grace entirely. The mainstream church has taught that the inability to reach for God unaided is not an excuse but a diagnosis, and that grace is the cure — though exactly how that grace engages the will has been richly debated within orthodoxy itself." },
+  { id:"p3", category:"pelagianism", text:"When a fellow Christian confesses struggling with the same sin repeatedly and doesn't appear to be making much behavioral change, is your first instinct to think they just aren't trying hard enough?", pa:"yes", explanation:"Answering yes might indicate a Pelagian instinct that sustained moral effort should reliably produce transformation — and that persistent failure therefore reflects a failure of will. Augustine countered that this underestimated the depth of sin's grip, while Aquinas added that even the will's genuine participation in moral growth is itself grace-enabled — the effort is real, but the capacity behind it is a gift. Orthodox Christianity has generally taught that persistent struggle with sin reflects the normal condition of human beings between conversion and glorification, not a simple failure of resolve." },
+  { id:"p4", category:"pelagianism", text:"Does your prayer life tend to pick up when circumstances get difficult and slow down when life is going well?", pa:"yes", explanation:"Answering yes may reflect a Pelagian assumption about self-sufficiency — that we naturally have what we need to manage life and turn to God primarily when our own resources run out. Augustine argued that total dependence on God is the permanent condition of human beings, and Aquinas deepened this by teaching that even our natural capacities for reason and virtue are sustained by God's ongoing creative activity — there is no purely self-sufficient baseline to fall back on. Orthodox Christianity has taught that prayer is less like a lifeline we reach for in crisis and more like breathing — continuous and essential regardless of circumstances." },
+  { id:"p5", category:"pelagianism", text:"Do you find ongoing struggle with the same sins frustrating in a way that makes you feel like you should have conquered them by now?", pa:"yes", explanation:"Answering yes might suggest a Pelagian expectation that effort and time should eventually produce consistent moral victory — and that failure to achieve it represents a personal shortcoming. Augustine located the problem in a fundamentally disordered will rather than merely weak resolve, while Aquinas added that moral transformation is a collaborative work — grace elevating and directing the will rather than the will simply grinding toward virtue on its own. Orthodox Christianity has taught that this frustration is worth examining not as motivation to try harder but as a window into what we actually believe grace is for and what transformation is meant to look like." },
+  { id:"mr1", category:"moralism", text:"Is the primary goal of the Christian life to become a genuinely good and moral person?", pa:"yes", explanation:"Answering yes might suggest a Moralist tendency to treat moral transformation as the destination of salvation rather than one of its fruits. Moralism as a theological tendency has no single founder but was implicitly addressed by Augustine, who argued that the goal of salvation is union with God, and by Luther, whose entire reform project was built on the conviction that Christianity had collapsed into a moral improvement program with religious language. Orthodox Christianity has generally taught that moral growth flows from restored relationship with God rather than being the primary aim — the distinction between fruit and goal matters more than it might initially appear." },
+  { id:"mr2", category:"moralism", text:"Do you find yourself thinking that a kind and generous person who has never heard of Jesus has a better shot at heaven than a mean-spirited Christian?", pa:"yes", explanation:"Answering yes may reflect a Moralist assumption that God's acceptance tracks primarily with moral character rather than with the relational and spiritual restoration the Gospel addresses. This instinct was precisely what Paul confronted in Romans 2-3, arguing that moral uprightness — even genuine moral uprightness — does not bridge the fundamental rupture between humanity and God that the cross addresses. Orthodox Christianity has taught that what separates people from God is not primarily bad behavior but a condition that moral goodness alone cannot resolve, which is why the Gospel is good news for the virtuous and the wicked alike." },
+  { id:"mr3", category:"moralism", text:"When thinking about someone who is genuinely kind and lives with integrity, is it hard to articulate why they would need Jesus at all?", pa:"yes", explanation:"Answering yes might indicate that the Gospel has been unconsciously reframed as primarily a moral rescue operation — in which case a genuinely good person does seem to need it less. This difficulty was addressed directly by Augustine, who argued that even the most virtuous pagan life is built on a foundation of disordered loves rather than genuine orientation toward God, and by Aquinas, who taught that natural virtue, however real, cannot achieve the supernatural end humans were made for. Orthodox Christianity has taught that the Gospel addresses something deeper than behavior — a fundamental separation from God that exists regardless of how morally impressive a person's life appears." },
+  { id:"mr4", category:"moralism", text:"Is your standing with God just as solid during a stretch of missed church and neglected Bible reading as it is when your spiritual disciplines are strong?", pa:"no", explanation:"Answering no may reflect a Moralist assumption that our standing with God fluctuates with our spiritual performance — that disciplines maintain an acceptance that neglect quietly erodes. Luther's central insight in the Reformation was that standing before God rests entirely on grace received through faith rather than on the quality of our religious performance, however valuable the disciplines themselves are. Orthodox Christianity has taught that the spiritual disciplines are means of drawing near to a God whose acceptance is already settled, not mechanisms for maintaining it." },
+  { id:"mr5", category:"moralism", text:"Is a Christian who visibly struggles with sin less likely to be genuinely saved than one who lives a morally upright life?", pa:"yes", explanation:"Answering yes might suggest a Moralist tendency to read outward moral performance as the primary indicator of genuine faith. Jesus's sharpest words in the Gospels were directed at the Pharisees, whose visible righteousness was impeccable — and some of his warmest encounters were with people whose moral records were openly poor. Orthodox Christianity has taught that visible moral struggle can be a sign of genuine engagement with the Holy Spirit's conviction, and that outward uprightness without inward transformation was precisely the condition Jesus most consistently warned against." },
+  { id:"an1", category:"antinomianism", text:"When you feel convicted about a pattern of sin in your life, is \"God's grace covers it\" a sufficient response?", pa:"yes", explanation:"Answering yes might suggest an Antinomian tendency to treat grace as a ceiling on moral accountability rather than the ground from which genuine transformation grows. Antinomianism has surfaced repeatedly throughout church history — Luther himself had to combat it in his own movement, particularly in the teachings of Johannes Agricola, who argued that the law had no place in the Christian life whatsoever. Orthodox Christianity has taught that grace and moral seriousness are not in tension — Paul's emphatic response in Romans 6 to the question of whether grace licenses continued sin was that the two are fundamentally incompatible." },
+  { id:"an2", category:"antinomianism", text:"Do churches that regularly call their congregation to holy living and accountability feel like they've missed the whole point of God's grace?", pa:"yes", explanation:"Answering yes may reflect an Antinomian instinct that any sustained call to holiness represents a failure to understand what grace means. Agricola and later Antinomian teachers argued that preaching the law to Christians was a form of legalism, a position Luther rejected and that was formally addressed in the Formula of Concord in 1577. Orthodox Christianity has taught that the call to holy living is not the opposite of grace but its natural expression — grounded in what God has already done rather than an attempt to earn what he hasn't yet given." },
+  { id:"an3", category:"antinomianism", text:"Is it healthy and necessary to continue to repent rather than just rest in God's grace?", pa:"no", explanation:"Answering no might indicate an Antinomian tendency to treat ongoing repentance as incompatible with a full understanding of grace — as though continuing to repent implies doubting what grace has already secured. Martin Luther's very first of his 95 Theses stated that the entire life of a believer should be one of repentance, written by a man who understood grace as profoundly as almost anyone in church history. Orthodox Christianity has taught that repentance and rest in grace are not alternatives but companions — repentance being the ongoing posture of someone who knows exactly how secure they are." },
+  { id:"an4", category:"antinomianism", text:"Is confronting a fellow Christian about their sin ultimately God's job rather than ours?", pa:"yes", explanation:"Answering yes may reflect an Antinomian tendency to use the language of humility and non-judgment to sidestep the genuine moral accountability the New Testament describes. This instinct was one Luther identified in Agricola's teaching — that grace rendered Christian community morally non-directive — which the Formula of Concord rejected as a distortion of what freedom in Christ actually means. Jesus gave specific instructions in Matthew 18 about how believers should address each other's sin, and Paul's letters return to mutual accountability repeatedly — suggesting that loving someone and leaving all correction to God are not the same thing." },
+  { id:"an5", category:"antinomianism", text:"Does living by a set of moral standards distract from the freedom you can experience by God's grace?", pa:"yes", explanation:"Answering yes might suggest an Antinomian framing in which grace and moral structure are fundamentally in competition — that standards are what you are freed from rather than freed to live by. This tension was at the heart of the Antinomian controversy Luther navigated, and it resurfaced in various forms through the Reformation period and beyond. Orthodox Christianity has taught that Christian freedom is freedom from the treadmill of earning God's approval through rule-keeping, not freedom from moral seriousness itself — grace being the ground of a transformed life rather than a replacement for one." },
+  { id:"pt1", category:"prosperity", text:"Does faithful tithing and generous giving reliably produce financial blessing from God?", pa:"yes", explanation:"Answering yes might suggest a Prosperity Theology tendency to treat giving as a financial mechanism that obligates a material return from God. Prosperity Theology as a formal movement emerged in mid-20th century America through figures like Oral Roberts and Kenneth Hagin, drawing on earlier Word of Faith teaching — it has been criticized by mainstream theologians across virtually every tradition. Orthodox Christianity has taught that generosity is genuinely celebrated in Scripture and that God blesses those who give freely, but that blessing describes God's posture rather than a transactional guarantee — the difference between a promise and a contract matters considerably." },
+  { id:"pt2", category:"prosperity", text:"Is it true that no matter how faithful or devout you are, suffering is just as likely to find you as anyone else?", pa:"no", explanation:"Answering no may reflect a Prosperity Theology assumption that faithfulness functions as a kind of spiritual insurance against hardship. The book of Job directly confronts this assumption — God himself describes Job as the most righteous man on earth, and then permits devastating suffering to find him anyway — and Paul's account of his own ministry in 2 Corinthians 11 reads as a catalog of shipwrecks, beatings, and imprisonments. Orthodox Christianity has consistently taught that faithfulness does not protect believers from suffering but shapes how they experience and respond to it." },
+  { id:"pt3", category:"prosperity", text:"When a faithful Christian experiences significant financial hardship or illness, is it worth examining whether unconfessed sin or lack of faith is the cause?", pa:"yes", explanation:"Answering yes might indicate a Prosperity Theology tendency to treat suffering as presumptive evidence of spiritual failure. Job's friends made exactly this argument with great sincerity and theological confidence — and God told them at the end of the book that they had not spoken rightly about him. Jesus addressed the same assumption directly in John 9, rejecting the disciples' question about whose sin had caused a man's blindness and reframing the situation entirely." },
+  { id:"pt4", category:"prosperity", text:"Is a homeless Christian just as blessed by God as a wealthy and successful one?", pa:"no", explanation:"Answering no may reflect a Prosperity Theology equation of blessing with material circumstances — in which visible poverty becomes evidence of reduced divine favor. This assumption runs directly into the Beatitudes, where Jesus describes the poor, the mourning, and the persecuted as blessed — a portrait that makes little sense if blessing and material prosperity reliably track together. Orthodox Christianity has taught that blessing is fundamentally about being in right relationship with God, a condition entirely independent of financial or material circumstances." },
+  { id:"pt5", category:"prosperity", text:"Would God respond more favorably to your prayer requests if you had more faith?", pa:"yes", explanation:"Answering yes might suggest a Prosperity Theology picture in which faith functions as a kind of spiritual currency — accumulated and applied to increase God's responsiveness. This transactional view of faith was at the heart of Kenneth Hagin's Word of Faith teaching and has been criticized by mainstream theologians as a fundamental distortion of what the New Testament means by faith. Orthodox Christianity has taught that faith is relational trust in a personal God rather than a leverageable quantity — the father in the parable of the prodigal son does not wait for his son to demonstrate sufficient faith before running to meet him." },
+  { id:"f1", category:"fatalism", text:"Is it possible to make a choice that falls outside of God's will for your life?", pa:"no", explanation:"Answering no might suggest a Fatalist tendency to interpret God's sovereignty as a script in which human choices are predetermined performances rather than genuine decisions. Theological fatalism has roots in certain readings of Calvin, though Calvin himself distinguished carefully between God's sovereignty and human responsibility — a distinction later Reformed theologians like Jonathan Edwards worked hard to preserve. Orthodox Christianity has broadly taught that God's sovereignty is large enough to incorporate genuine human agency rather than replace it, holding both things together even where the tension resists easy resolution." },
+  { id:"f2", category:"fatalism", text:"Since God's plan is perfect and unchanging, is prayer more about changing your heart than changing circumstances?", pa:"yes", explanation:"Answering yes may reflect a Fatalist assumption that outcomes are fixed and that prayer's only real function is interior alignment rather than genuine participation in how events unfold. This position was debated extensively in Reformed theology, with figures like John Calvin affirming that God ordains both ends and means — meaning prayer is itself one of the means through which God's purposes are accomplished, not merely a spiritual exercise running alongside them. Orthodox Christianity has taught that prayer genuinely matters to outcomes, and that the Biblical narrative's many moments of apparent divine responsiveness to human petition are not merely cosmetic." },
+  { id:"f3", category:"fatalism", text:"Since God already knows who will come to faith, is sharing the Gospel more about obedience than actually influencing someone's eternal destiny?", pa:"yes", explanation:"Answering yes might indicate a Fatalist tendency to drain evangelism of genuine consequence by making the outcome feel already settled regardless of human participation. This tension was addressed directly by Calvin, who argued that God's election does not bypass the preaching of the Gospel but works through it — and by later Reformed missionaries like William Carey, whose entire vocation was built on the conviction that human proclamation genuinely matters. Paul's question in Romans 10 — how will they hear without someone preaching — suggests he understood evangelism as consequential rather than merely obligatory." },
+  { id:"f4", category:"fatalism", text:"Is the phrase \"everything happens for a reason\" something you would think when you hear about a parent who just lost a child — even though you wouldn't say it out loud?", pa:"yes", explanation:"Answering yes may reflect a Fatalist instinct to resolve the tension between God's sovereignty and genuine tragedy by making God the direct author of every painful event. Aquinas argued that evil is not a thing God authors but a privation — an absence of good that God permits within a world of free creatures, working all things toward his ultimate purposes without directly scripting every loss within that arc. Orthodox Christianity has generally taught that God's sovereignty and the reality of genuine evil are both true at the same time, and that holding that tension honestly is more faithful to Scripture — and more pastorally useful — than resolving it by making God the writer of every tragedy." },
+  { id:"f5", category:"fatalism", text:"Do your choices genuinely shape the arc of God's unfolding story in the world?", pa:"no", explanation:"Answering no might suggest a Fatalist picture in which human decisions are predetermined performances rather than real contributions to a story with genuine stakes. This was the concern that led Arminius to break with strict Calvinist determinism in the late 16th century, arguing that a God who scripts every human choice renders moral responsibility incoherent — a debate that has continued productively within orthodox Christianity ever since. The mainstream church across most traditions has taught that human choices are genuinely consequential, that the story has real stakes, and that God's sovereignty is large enough to work through authentic human agency rather than around it." },
+  { id:"sp1", category:"semipelagianism", text:"Does God meet you halfway when you take the first step toward him in faith?", pa:"yes", explanation:"Answering yes might suggest a Semi-Pelagian tendency to picture salvation as a cooperative initiative in which human beings make the first move and grace responds. Semi-Pelagianism emerged in the 5th century among monks in southern Gaul who found Augustine's position too severe, and was condemned at the Council of Orange in 529 AD — the council affirmed that even the initial desire to reach for God is itself a gift of grace rather than something humans contribute independently. Aquinas later refined this by teaching that grace perfects and elevates nature rather than bypassing it, preserving genuine human response while insisting that grace is always the prior and enabling cause rather than one partner among two." },
+  { id:"sp2", category:"semipelagianism", text:"Does salvation come down to a simple choice: a choice to follow Jesus?", pa:"yes", explanation:"Answering yes may reflect a Semi-Pelagian assumption that the decisive factor in salvation is a human decision that grace then confirms and completes. The Gallic monks condemned at Orange argued something similar — that humans could initiate faith from their natural resources and grace would carry them the rest of the way — a position the council rejected by affirming that the will's openness to God is itself grace-produced. Orthodox Christianity has broadly taught that the choice to follow Jesus is real and genuinely consequential, but that the capacity to make that choice — the willingness, the openness, the hunger — arrives as a gift before it arrives as a decision." },
+  { id:"sp3", category:"semipelagianism", text:"Before you ever consciously reached for God, was something already reaching for you?", pa:"no", explanation:"Answering no might suggest a Semi-Pelagian picture in which the human side of the salvation equation precedes and prompts the divine. The Council of Orange was convened specifically to settle this question, affirming Augustine's position that grace is always prevenient — going before and making possible any human movement toward God. Aquinas deepened this by teaching that God's creative and sustaining activity underlies even our natural capacities for reason and desire, meaning there is no moment of purely unaided human reaching — something is always already at work beneath whatever we experience as our own initiative." },
+  { id:"sp4", category:"semipelagianism", text:"Is salvation best described as a partnership between your decision and God's grace?", pa:"yes", explanation:"Answering yes may reflect a Semi-Pelagian framing in which grace and human will contribute as two roughly equal partners to a shared outcome. This was close to the position of John Cassian, the most sophisticated of the Gallic monks, who tried to hold human responsibility and divine grace together in a way the Council of Orange ultimately ruled tipped too far toward human initiative. Aquinas offered a more durable framework — distinguishing between prevenient grace, which initiates and enables, and cooperative grace, which works alongside genuine human response — preserving real human agency without making it a co-equal cause alongside grace." },
+  { id:"sp5", category:"semipelagianism", text:"Is God waiting to pour out his grace on anyone who chooses to call on his name?", pa:"yes", explanation:"Answering yes might indicate a Semi-Pelagian picture of grace as standing by in readiness until human initiative triggers it — making the human choice the activating cause and grace the response. The Council of Orange directly addressed this sequence, affirming that grace precedes and produces the very desire to call on God's name rather than waiting for that desire to appear on its own. The parable of the prodigal son is worth sitting with here — the father is not waiting passively at the door but is already running toward his son while the son is still a long way off, which suggests the initiative was never entirely the son's to begin with." }
+];
+
+const SECTION_ORDER = ["The Physical World & Human Nature","The Nature of Jesus","The Nature of God","Scripture & Revelation","Salvation & Human Nature","Faith & Blessing","God, Sovereignty & Human Agency"];
+const SAVE_KEY = "theology_mirror_v1";
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function tryLoad() {
+  try { const r = localStorage.getItem(SAVE_KEY); return r ? JSON.parse(r) : null; } catch { return null; }
+}
+function trySave(d) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(d)); } catch {} }
+function tryClear() { try { localStorage.removeItem(SAVE_KEY); } catch {} }
+
+let screen = "intro";
+let questions = [];
+let currentIndex = 0;
+let answers = {};
+let selected = null;
+let expanded = {};
+let savedState = null;
+
+function render() {
+  const root = document.getElementById("root");
+  root.innerHTML = "";
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = '<div class="top-bar"></div><div class="inner" id="inner"></div>';
+  root.appendChild(card);
+  const inner = document.getElementById("inner");
+
+  if (screen === "intro") renderIntro(inner);
+  else if (screen === "question") renderQuestion(inner);
+  else if (screen === "results") renderResults(inner);
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderIntro(el) {
+  const saved = tryLoad();
+  if (saved && saved.screen === "question" && saved.questions && saved.index < saved.questions.length) {
+    savedState = saved;
+  }
+
+  el.innerHTML = `
+    <div class="header-wrap">
+      <div class="label">A Self-Examination in Christian Thought</div>
+      <h1>The Theology <em>Mirror</em></h1>
+      <div class="subtitle">What do you really believe?</div>
+    </div>
+    <p>This questionnaire is not a test of orthodoxy — it is an invitation to <strong>honest self-examination</strong>. Many beliefs we hold were never consciously chosen. They were absorbed through sermons, worship songs, family traditions, and the water we swim in as modern American Christians.</p>
+    <p>Some of those absorbed beliefs have names — and histories. Many were debated fiercely in the early church and eventually recognized as departing from what Scripture actually teaches. Most people who hold them have no idea they have a name, let alone that they were examined and addressed centuries ago.</p>
+    <p>This questionnaire will help you identify <strong>twelve theological tendencies</strong> that quietly shape the faith of many modern Christians without their awareness.</p>
+    <div class="div-wrap"><div class="div-line"></div><span class="div-text">The twelve areas examined</span><div class="div-line"></div></div>
+    <div class="grid">${CATEGORIES.map(c => `<div class="pill">${c.name}</div>`).join("")}</div>
+    <p>You will be asked <strong>60 questions</strong> in random order. Answer each one based on your honest instinct rather than what you think the correct theological answer should be. The most revealing answers come from your gut, not your head.</p>
+    <p>There are no trick questions and no wrong people — only unexamined beliefs. The goal is not to shame but to <strong>illuminate</strong>.</p>
+    <button class="btn-primary" id="btn-start">Begin the Examination →</button>
+    ${savedState ? `<div class="resume-box"><p class="resume-text">You have a saved session in progress — question ${savedState.index + 1} of 60. Would you like to pick up where you left off?</p><div class="resume-buttons"><button class="btn-resume" id="btn-resume">Resume</button><button class="btn-fresh" id="btn-fresh">Start Fresh</button></div></div>` : ""}
+  `;
+
+  document.getElementById("btn-start").onclick = () => startFresh();
+  if (savedState) {
+    document.getElementById("btn-resume").onclick = () => startResume(savedState);
+    document.getElementById("btn-fresh").onclick = () => startFresh();
+  }
+}
+
+function startFresh() {
+  tryClear();
+  savedState = null;
+  questions = shuffle(QUESTIONS);
+  currentIndex = 0;
+  answers = {};
+  selected = null;
+  screen = "question";
+  render();
+}
+
+function startResume(data) {
+  questions = data.questions.map(id => QUESTIONS.find(q => q.id === id)).filter(Boolean);
+  currentIndex = data.index;
+  answers = data.answers || {};
+  selected = null;
+  savedState = null;
+  screen = "question";
+  render();
+}
+
+function renderQuestion(el) {
+  const q = questions[currentIndex];
+  const pct = (currentIndex / questions.length) * 100;
+  el.innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span class="progress-label">Progress</span>
+        <span class="progress-count">${currentIndex + 1} of ${questions.length}</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-num">Question ${currentIndex + 1}</div>
+    <div class="q-text">${escHtml(q.text)}</div>
+    <div class="answer-grid">
+      <button class="btn-yes${selected === 'yes' ? ' selected' : ''}" id="btn-yes">Yes</button>
+      <button class="btn-no${selected === 'no' ? ' selected' : ''}" id="btn-no">No</button>
+    </div>
+    <button class="save-btn" id="btn-save">Save progress &amp; exit</button>
+  `;
+
+  const yBtn = document.getElementById("btn-yes");
+  const nBtn = document.getElementById("btn-no");
+
+  yBtn.onclick = () => doAnswer("yes");
+  nBtn.onclick = () => doAnswer("no");
+  document.getElementById("btn-save").onclick = () => {
+    trySave({ screen: "question", questions: questions.map(q => q.id), index: currentIndex, answers });
+    showBanner();
+  };
+}
+
+function doAnswer(val) {
+  if (selected !== null) return;
+  selected = val;
+
+  const yBtn = document.getElementById("btn-yes");
+  const nBtn = document.getElementById("btn-no");
+  if (yBtn) { yBtn.classList.toggle("selected", val === "yes"); yBtn.onclick = null; }
+  if (nBtn) { nBtn.classList.toggle("selected", val === "no"); nBtn.onclick = null; }
+
+  const q = questions[currentIndex];
+  answers[q.id] = val;
+
+  setTimeout(() => {
+    selected = null;
+    if (currentIndex + 1 >= questions.length) {
+      tryClear();
+      screen = "results";
+    } else {
+      currentIndex++;
+      trySave({ screen: "question", questions: questions.map(q => q.id), index: currentIndex, answers });
+    }
+    render();
+  }, 280);
+}
+
+function renderResults(el) {
+  const scores = {};
+  CATEGORIES.forEach(c => { scores[c.id] = { total: 0, triggered: [] }; });
+  QUESTIONS.forEach(q => {
+    if (answers[q.id] && answers[q.id] === q.pa) {
+      scores[q.category].total++;
+      scores[q.category].triggered.push(q);
+    }
+  });
+
+  const totalDetected = Object.values(scores).filter(s => s.total > 0).length;
+  const introText = totalDetected === 0
+    ? "Your answers did not reveal strong tendencies toward any of the twelve areas examined. That said, these beliefs are subtle and culturally pervasive — consider revisiting this questionnaire periodically as your faith develops."
+    : totalDetected <= 3
+    ? `Your answers revealed tendencies in ${totalDetected} area${totalDetected > 1 ? "s" : ""}. The explanations below are offered not as accusations but as invitations to explore what the historic Christian tradition has said about these questions.`
+    : `Your answers revealed tendencies in ${totalDetected} areas. This is not unusual — many of these assumptions are deeply embedded in modern Christian culture. The explanations below are offered as starting points for further study and reflection.`;
+
+  function slLabel(n) {
+    if (n === 0) return { label: "No tendencies detected", detected: false };
+    if (n <= 2) return { label: "Mild tendencies", detected: true };
+    if (n <= 4) return { label: "Meaningful influence", detected: true };
+    return { label: "Strong influence", detected: true };
+  }
+
+  function dotColor(score) {
+    if (score <= 2) return "#c9973a";
+    if (score <= 4) return "#c4572a";
+    return "#8b2e0f";
+  }
+
+  let sectionsHtml = "";
+  SECTION_ORDER.forEach(section => {
+    const cats = CATEGORIES.filter(c => c.section === section);
+    sectionsHtml += `<div class="section-title">${escHtml(section)}</div>`;
+    cats.forEach(cat => {
+      const score = scores[cat.id];
+      const isClean = score.total === 0;
+      const sl = slLabel(score.total);
+      const dc = dotColor(score.total);
+
+      let dotsHtml = "";
+      if (!isClean) {
+        dotsHtml = '<div class="dot-row">';
+        for (let i = 0; i < 5; i++) {
+          const filled = i < score.total;
+          dotsHtml += `<div class="dot" style="background:${filled ? dc : "#f5efe0"};border:1px solid ${filled ? dc : "#c4a96e"}"></div>`;
+        }
+        dotsHtml += "</div>";
+      }
+
+      let bodyHtml = "";
+      if (!isClean) {
+        let triggeredHtml = score.triggered.map((tq, ti) => `
+          <div class="tq-wrap${ti === score.triggered.length - 1 ? ' last' : ''}">
+            <div class="tq-text">"${escHtml(tq.text)}"</div>
+            <div class="tq-answer">You answered: ${tq.pa === "yes" ? "Yes" : "No"}</div>
+            <div class="tq-expl">${escHtml(tq.explanation)}</div>
+          </div>`).join("");
+        bodyHtml = `<div class="result-body" id="body-${cat.id}" style="display:none">
+          <p class="cat-desc">${escHtml(cat.description)}</p>
+          ${triggeredHtml}
+        </div>`;
+      }
+
+      sectionsHtml += `
+        <div class="result-item ${isClean ? 'clean' : 'detected'}" id="item-${cat.id}">
+          <div class="result-header ${isClean ? 'clean' : 'detected'}" ${isClean ? '' : `onclick="toggleExpand('${cat.id}')"`}>
+            <span class="result-name ${isClean ? 'clean' : 'detected'}">${escHtml(cat.name)}</span>
+            <div class="score-wrap">
+              ${dotsHtml}
+              <span class="score-label ${sl.detected ? 'detected' : 'clean'}">${sl.label}</span>
+              ${!isClean ? `<span class="chevron" id="chev-${cat.id}">▼</span>` : ""}
+            </div>
+          </div>
+          ${bodyHtml}
+        </div>`;
+    });
+  });
+
+  el.innerHTML = `
+    <div class="header-wrap">
+      <div class="label">Your Results</div>
+      <h2>The Theology Mirror</h2>
+      <div class="ornament">— ✦ —</div>
+      <p class="results-intro">${escHtml(introText)}</p>
+    </div>
+    ${sectionsHtml}
+    <div class="footer">
+      <p>These results are an invitation to further study, not a final verdict. Every one of these tendencies is well-documented in church history, which means there is a rich tradition of thoughtful responses to draw from. Consider bringing these findings to a trusted pastor, theologian, or study community.</p>
+      <div class="footer-btns">
+        <button class="btn-print" onclick="window.print()">Save / Print Results</button>
+        <button class="btn-restart" onclick="doRestart()">Take It Again</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleExpand(catId) {
+  const body = document.getElementById("body-" + catId);
+  const chev = document.getElementById("chev-" + catId);
+  if (!body) return;
+  const isOpen = body.style.display !== "none";
+  body.style.display = isOpen ? "none" : "block";
+  if (chev) chev.classList.toggle("open", !isOpen);
+}
+
+function doRestart() {
+  tryClear();
+  savedState = null;
+  screen = "intro";
+  expanded = {};
+  answers = {};
+  questions = [];
+  currentIndex = 0;
+  selected = null;
+  render();
+}
+
+function showBanner() {
+  const b = document.getElementById("save-banner");
+  b.style.display = "block";
+  setTimeout(() => { b.style.display = "none"; }, 2500);
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+render();
+</script>
+</body>
+</html>
